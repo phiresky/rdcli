@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import "reflect-metadata";
 import {RESTClient, GET, POST, FormBody, UrlReplacements, up} from './DecoratorRestClient';
 
@@ -73,6 +74,10 @@ export class RealDebridRestClient extends RESTClient {
         }>
     { throw up }
 
+    @GET("/torrents/availableHosts")
+    public torrentsAvailableHosts(): Promise<{host: string, max_file_size: number}[]>
+    { throw up }
+
     @POST("/torrents/addMagnet")
     public torrentsAddMagnet(
         @FormBody args: {
@@ -98,7 +103,7 @@ export class RealDebridRestClient extends RESTClient {
     public torrentsInfo( @UrlReplacements args: { id: string }): Promise<SingleTorrent> { throw up }
 
     public async magnetLinkToURL(magnetLink: string, progressUpdate: (message: string) => void) {
-        const magnet = await this.torrentsAddMagnet({ magnet: magnetLink, host: 'uptobox.com' });
+        const magnet = await this.torrentsAddMagnet({ magnet: magnetLink, host: 'uptobox.com', split: 50 });
         progressUpdate("added magnet link");
         await this.torrentsSelectFiles(magnet, { files: "all" });
         let infos = { status: 'wait', progress: 0, links: [] as string[] };
@@ -127,6 +132,7 @@ if(!link || !link.match(/^magnet:.+/)) {
     process.exit(1);
 }
 const rd = new RealDebridRestClient(token);
+//rd.torrentsAvailableHosts().then(x => console.log(x));
 rd.magnetLinkToURL(link, progress => console.error(progress))
     .then(link => rd.unrestrictLink({ link }))
     .then(res => console.log(res.download))

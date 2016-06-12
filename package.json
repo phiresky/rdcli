@@ -1,13 +1,13 @@
 {
   "name": "rdclient",
-  "version": "1.0.0",
+  "version": "1.0.7",
   "description": "",
-  "main": "dist/rdclient.d.ts",
+  "main": "dist/rdclient.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "phiresky",
+  "license": "AGPL-3.0",
   "bin": {
     "rdclient": "dist/rdclient.js"
   },
